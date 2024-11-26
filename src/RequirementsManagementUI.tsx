@@ -109,6 +109,7 @@ const requirements: Requirement[] = [
 const RequirementsManagementUI: React.FC = () => {
   const [selectedRequirement, setSelectedRequirement] = useState<Requirement | null>(null);
   const [showAIInsights, setShowAIInsights] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const [activeCollaborators] = useState([
     { id: 1, name: 'John Doe', status: 'active' },
     { id: 2, name: 'Jane Smith', status: 'reviewing' }
@@ -118,22 +119,31 @@ const RequirementsManagementUI: React.FC = () => {
     setShowAIInsights(true);
   };
 
+  const handleInputChange = (field: keyof Requirement, value: string) => {
+    if (selectedRequirement) {
+      setSelectedRequirement({
+        ...selectedRequirement,
+        [field]: value
+      });
+    }
+  };
+
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Left Sidebar */}
       <div className="w-16 bg-gray-900 p-3 flex flex-col items-center space-y-4">
-        <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white">
-          <FileText size={24} />
+        <Button variant="ghost" className="w-10 h-10 p-2 text-gray-400 hover:text-white">
+          <FileText className="w-6 h-6" />
         </Button>
-        <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white">
-          <GitBranch size={24} />
+        <Button variant="ghost" className="w-10 h-10 p-2 text-gray-400 hover:text-white">
+          <GitBranch className="w-6 h-6" />
         </Button>
-        <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white">
-          <Brain size={24} />
+        <Button variant="ghost" className="w-10 h-10 p-2 text-gray-400 hover:text-white">
+          <Brain className="w-6 h-6" />
         </Button>
         <div className="flex-grow" />
-        <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white">
-          <Settings size={24} />
+        <Button variant="ghost" className="w-10 h-10 p-2 text-gray-400 hover:text-white">
+          <Settings className="w-6 h-6" />
         </Button>
       </div>
 
@@ -144,15 +154,19 @@ const RequirementsManagementUI: React.FC = () => {
           <div className="p-4">
             <Button className="w-full justify-between">
               MFAI Project
-              <ChevronDown size={16} />
+              <ChevronDown className="w-4 h-4" />
             </Button>
           </div>
-          <div className="p-4 border-t">
-            <Input
-              placeholder="Search requirements..."
-              className="w-full"
-              prefix={<Search className="text-gray-400" size={16} />}
-            />
+          <div className="p-4 border-t relative">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Input
+                placeholder="Search requirements..."
+                className="pl-10 w-full"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
           </div>
           <div className="overflow-y-auto">
             {requirements.map(req => (
@@ -185,7 +199,7 @@ const RequirementsManagementUI: React.FC = () => {
           <div className="h-16 border-b bg-white flex items-center px-4 justify-between">
             <div className="flex items-center space-x-4">
               <Button variant="outline">
-                <Plus size={16} className="mr-2" />
+                <Plus className="w-4 h-4 mr-2" />
                 New Requirement
               </Button>
               <Button variant="outline">Import</Button>
@@ -193,11 +207,11 @@ const RequirementsManagementUI: React.FC = () => {
             </div>
             <div className="flex items-center space-x-4">
               <Button variant="outline" onClick={handleAnalyzeRequirement}>
-                <Zap size={16} className="mr-2" />
+                <Zap className="w-4 h-4 mr-2" />
                 AI Analysis
               </Button>
-              <Button className="bg-blue-600">
-                <Check size={16} className="mr-2" />
+              <Button className="bg-blue-600 text-white hover:bg-blue-700">
+                <Check className="w-4 h-4 mr-2" />
                 Approve
               </Button>
             </div>
@@ -224,7 +238,10 @@ const RequirementsManagementUI: React.FC = () => {
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700">Title</label>
-                          <Input value={selectedRequirement.title} />
+                          <Input 
+                            value={selectedRequirement.title}
+                            onChange={(e) => handleInputChange('title', e.target.value)}
+                          />
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700">Description</label>
@@ -232,20 +249,30 @@ const RequirementsManagementUI: React.FC = () => {
                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                             rows={4}
                             value={selectedRequirement.description}
+                            onChange={(e) => handleInputChange('description', e.target.value)}
                           />
                         </div>
                         <div className="grid grid-cols-3 gap-4">
                           <div>
                             <label className="block text-sm font-medium text-gray-700">Type</label>
-                            <Input value={selectedRequirement.type} />
+                            <Input 
+                              value={selectedRequirement.type}
+                              onChange={(e) => handleInputChange('type', e.target.value)}
+                            />
                           </div>
                           <div>
                             <label className="block text-sm font-medium text-gray-700">Priority</label>
-                            <Input value={selectedRequirement.priority} />
+                            <Input 
+                              value={selectedRequirement.priority}
+                              onChange={(e) => handleInputChange('priority', e.target.value)}
+                            />
                           </div>
                           <div>
                             <label className="block text-sm font-medium text-gray-700">Status</label>
-                            <Input value={selectedRequirement.status} />
+                            <Input 
+                              value={selectedRequirement.status}
+                              onChange={(e) => handleInputChange('status', e.target.value)}
+                            />
                           </div>
                         </div>
                       </div>
@@ -253,6 +280,14 @@ const RequirementsManagementUI: React.FC = () => {
 
                     <TabsContent value="ai-insights" className="mt-4">
                       <AIAnalysisPanel insights={mockAIInsights} />
+                    </TabsContent>
+
+                    <TabsContent value="relationships" className="mt-4">
+                      <div className="text-gray-500">Relationship mapping coming soon...</div>
+                    </TabsContent>
+
+                    <TabsContent value="history" className="mt-4">
+                      <div className="text-gray-500">History tracking coming soon...</div>
                     </TabsContent>
                   </Tabs>
                 </CardContent>
@@ -272,15 +307,15 @@ const RequirementsManagementUI: React.FC = () => {
             <h3 className="font-medium mb-4">AI Assistant</h3>
             <div className="space-y-2">
               <Button variant="outline" className="w-full justify-start">
-                <Plus size={16} className="mr-2" />
+                <Plus className="w-4 h-4 mr-2" />
                 Generate Requirements
               </Button>
               <Button variant="outline" className="w-full justify-start">
-                <RefreshCw size={16} className="mr-2" />
+                <RefreshCw className="w-4 h-4 mr-2" />
                 Augment Requirements
               </Button>
               <Button variant="outline" className="w-full justify-start">
-                <Search size={16} className="mr-2" />
+                <Search className="w-4 h-4 mr-2" />
                 Impact Analysis
               </Button>
             </div>
@@ -309,7 +344,7 @@ const RequirementsManagementUI: React.FC = () => {
             <h3 className="font-medium mb-4">Templates</h3>
             <div className="space-y-2">
               <Button variant="outline" className="w-full justify-start">
-                <Layout size={16} className="mr-2" />
+                <Layout className="w-4 h-4 mr-2" />
                 Manage Templates
               </Button>
             </div>
@@ -320,12 +355,12 @@ const RequirementsManagementUI: React.FC = () => {
             <h3 className="font-medium mb-4">Recent Activity</h3>
             <div className="space-y-2">
               <div className="text-sm text-gray-600">
-                <History size={14} className="inline mr-2" />
+                <History className="w-4 h-4 inline mr-2" />
                 John updated REQ-001
                 <div className="text-xs text-gray-500 ml-6">5 minutes ago</div>
               </div>
               <div className="text-sm text-gray-600">
-                <MessageSquare size={14} className="inline mr-2" />
+                <MessageSquare className="w-4 h-4 inline mr-2" />
                 Jane commented on REQ-002
                 <div className="text-xs text-gray-500 ml-6">10 minutes ago</div>
               </div>
