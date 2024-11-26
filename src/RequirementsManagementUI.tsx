@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { AIAnalysisPanel } from './components/AIAnalysisPanel';
-import { AIRequirementInsights } from './types/AIAnalysis';
+import { Search, Plus, FileText, GitBranch, RefreshCw, Settings, ChevronDown, MessageSquare, Check, Brain, Zap, History, Users, Layout } from 'lucide-react';
+import { Card, CardContent } from './components/ui/card';
 import { Button } from './components/ui/button';
 import { Input } from './components/ui/input';
-import { Card } from './components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from './components/ui/tabs';
+import { AIAnalysisPanel } from './components/AIAnalysisPanel';
+import { AIRequirementInsights } from './types/AIAnalysis';
 
-// Mock data for requirements and AI insights
 const mockAIInsights: AIRequirementInsights = {
   qualityScore: {
     overallScore: 0.85,
@@ -18,17 +18,15 @@ const mockAIInsights: AIRequirementInsights = {
   gapAnalysis: {
     missingElements: [
       'Performance requirements',
-      'Security constraints',
-      'User authentication details'
+      'Security constraints'
     ],
     potentialRisks: [
       'Scalability limitations',
-      'Potential integration challenges'
+      'Integration challenges'
     ],
     recommendedActions: [
-      'Define clear performance metrics',
-      'Specify security protocols',
-      'Elaborate on user access controls'
+      'Define performance metrics',
+      'Specify security protocols'
     ]
   },
   terminologyStandardization: [
@@ -36,11 +34,6 @@ const mockAIInsights: AIRequirementInsights = {
       originalTerm: 'system interaction',
       recommendedTerm: 'user interface engagement',
       confidence: 0.85
-    },
-    {
-      originalTerm: 'data processing',
-      recommendedTerm: 'information transformation',
-      confidence: 0.72
     }
   ],
   relationshipDetection: [
@@ -52,29 +45,16 @@ const mockAIInsights: AIRequirementInsights = {
   ],
   testCaseSuggestions: [
     {
-      testScenario: 'Validate user authentication workflow',
+      testScenario: 'Validate dimming response',
       testType: 'system',
       complexity: 'medium'
-    },
-    {
-      testScenario: 'Performance load testing',
-      testType: 'integration',
-      complexity: 'high'
     }
   ],
   complianceChecks: [
     {
-      standard: 'GDPR',
+      standard: 'ISO 26262',
       status: 'partial',
-      details: [
-        'Data protection measures incomplete',
-        'User consent mechanism needs refinement'
-      ]
-    },
-    {
-      standard: 'ISO 27001',
-      status: 'compliant',
-      details: ['Security framework adequately defined']
+      details: ['Safety requirements need enhancement']
     }
   ],
   workflowPatterns: [
@@ -83,22 +63,13 @@ const mockAIInsights: AIRequirementInsights = {
       frequency: 0.75,
       efficiency: 0.65,
       suggestedOptimizations: [
-        'Implement iterative review process',
-        'Add collaborative annotation features'
+        'Implement iterative review process'
       ]
     }
   ],
   ambiguityDetection: {
-    phrases: [
-      'system should handle',
-      'user might need',
-      'potentially implement'
-    ],
-    suggestedReplacements: [
-      'system must explicitly handle',
-      'user requires',
-      'definitively implement'
-    ],
+    phrases: ['should handle', 'might need'],
+    suggestedReplacements: ['must handle', 'requires'],
     ambiguityScore: 0.45
   },
   performanceMetrics: {
@@ -107,119 +78,261 @@ const mockAIInsights: AIRequirementInsights = {
   }
 };
 
-// Mock requirements data with explicit type
 interface Requirement {
   id: string;
   title: string;
   description: string;
-  priority: string;
   status: string;
+  type: string;
+  priority: string;
 }
 
-const mockRequirements: Requirement[] = [
+const requirements: Requirement[] = [
   {
-    id: '1',
-    title: 'User Authentication',
-    description: 'Implement secure user login and registration process',
-    priority: 'High',
-    status: 'Draft'
+    id: 'REQ-001',
+    title: 'Automatic Dimming Activation',
+    description: 'The rearview mirror shall automatically dim in response to headlights from vehicles approaching from the rear during night-time driving or low-light conditions.',
+    status: 'In Review',
+    type: 'Functional',
+    priority: 'High'
   },
   {
-    id: '2',
-    title: 'Dashboard Functionality',
-    description: 'Create a comprehensive user dashboard with key metrics',
-    priority: 'Medium',
-    status: 'In Progress'
+    id: 'REQ-002',
+    title: 'Manual Override',
+    description: 'The system shall allow the driver to manually control the dimming feature through a switch located on the mirror or within the vehicle\'s central control interface.',
+    status: 'Approved',
+    type: 'Functional',
+    priority: 'Medium'
   }
 ];
 
-export const RequirementsManagementUI: React.FC = () => {
-  const [requirementText, setRequirementText] = useState('');
-  const [requirements, setRequirements] = useState<Requirement[]>(mockRequirements);
+const RequirementsManagementUI: React.FC = () => {
+  const [selectedRequirement, setSelectedRequirement] = useState<Requirement | null>(null);
   const [showAIInsights, setShowAIInsights] = useState(false);
-  const [activeTab, setActiveTab] = useState('requirements');
-
-  const handleAddRequirement = () => {
-    if (requirementText.trim()) {
-      const newRequirement: Requirement = {
-        id: (requirements.length + 1).toString(),
-        title: requirementText.split('\n')[0],
-        description: requirementText,
-        priority: 'Medium',
-        status: 'Draft'
-      };
-      setRequirements([...requirements, newRequirement]);
-      setRequirementText('');
-    }
-  };
+  const [activeCollaborators] = useState([
+    { id: 1, name: 'John Doe', status: 'active' },
+    { id: 2, name: 'Jane Smith', status: 'reviewing' }
+  ]);
 
   const handleAnalyzeRequirement = () => {
     setShowAIInsights(true);
-    setActiveTab('analysis');
-  };
-
-  const handleClearRequirement = () => {
-    setRequirementText('');
-    setShowAIInsights(false);
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <Tabs defaultValue={activeTab}>
-        <TabsList>
-          <TabsTrigger value="requirements">Requirements</TabsTrigger>
-          <TabsTrigger value="analysis">AI Analysis</TabsTrigger>
-        </TabsList>
+    <div className="flex h-screen bg-gray-100">
+      {/* Left Sidebar */}
+      <div className="w-16 bg-gray-900 p-3 flex flex-col items-center space-y-4">
+        <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white">
+          <FileText size={24} />
+        </Button>
+        <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white">
+          <GitBranch size={24} />
+        </Button>
+        <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white">
+          <Brain size={24} />
+        </Button>
+        <div className="flex-grow" />
+        <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white">
+          <Settings size={24} />
+        </Button>
+      </div>
 
-        <TabsContent value="requirements">
-          <div className="grid grid-cols-3 gap-4">
-            <Card className="p-4 col-span-2">
-              <h2 className="text-xl font-bold mb-4">Add New Requirement</h2>
-              <Input 
-                placeholder="Enter your requirement details"
-                value={requirementText}
-                onChange={(e) => setRequirementText(e.target.value)}
-                className="mb-4 h-32"
-              />
-              <div className="flex space-x-2">
-                <Button onClick={handleAddRequirement}>
-                  Add Requirement
-                </Button>
-                <Button variant="outline" onClick={handleClearRequirement}>
-                  Clear
-                </Button>
-                <Button onClick={handleAnalyzeRequirement}>
-                  AI Analysis
-                </Button>
-              </div>
-            </Card>
-
-            <Card className="p-4">
-              <h2 className="text-xl font-bold mb-4">Requirements List</h2>
-              <div className="space-y-2">
-                {requirements.map((req) => (
-                  <div key={req.id} className="border p-2 rounded">
-                    <div className="font-semibold">{req.title}</div>
-                    <div className="text-sm text-gray-600">{req.description}</div>
-                    <div className="flex justify-between text-xs mt-1">
-                      <span>Priority: {req.priority}</span>
-                      <span>Status: {req.status}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </Card>
+      {/* Main Content Area */}
+      <div className="flex-1 flex overflow-hidden">
+        {/* Project Navigator */}
+        <div className="w-64 bg-white border-r">
+          <div className="p-4">
+            <Button className="w-full justify-between">
+              MFAI Project
+              <ChevronDown size={16} />
+            </Button>
           </div>
-        </TabsContent>
+          <div className="p-4 border-t">
+            <Input
+              placeholder="Search requirements..."
+              className="w-full"
+              prefix={<Search className="text-gray-400" size={16} />}
+            />
+          </div>
+          <div className="overflow-y-auto">
+            {requirements.map(req => (
+              <div
+                key={req.id}
+                className={`p-3 border-b cursor-pointer hover:bg-gray-50 ${
+                  selectedRequirement?.id === req.id ? 'bg-blue-50' : ''
+                }`}
+                onClick={() => setSelectedRequirement(req)}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">{req.id}</span>
+                  <span className={`text-xs px-2 py-1 rounded-full ${
+                    req.status === 'Approved' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                  }`}>
+                    {req.status}
+                  </span>
+                </div>
+                <div className="text-sm mt-1 text-gray-600 truncate">
+                  {req.title}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
 
-        <TabsContent value="analysis">
-          {showAIInsights && (
-            <div className="grid grid-cols-1 gap-4">
-              <AIAnalysisPanel insights={mockAIInsights} />
+        {/* Main Content */}
+        <div className="flex-1 flex flex-col">
+          {/* Toolbar */}
+          <div className="h-16 border-b bg-white flex items-center px-4 justify-between">
+            <div className="flex items-center space-x-4">
+              <Button variant="outline">
+                <Plus size={16} className="mr-2" />
+                New Requirement
+              </Button>
+              <Button variant="outline">Import</Button>
+              <Button variant="outline">Export</Button>
             </div>
-          )}
-        </TabsContent>
-      </Tabs>
+            <div className="flex items-center space-x-4">
+              <Button variant="outline" onClick={handleAnalyzeRequirement}>
+                <Zap size={16} className="mr-2" />
+                AI Analysis
+              </Button>
+              <Button className="bg-blue-600">
+                <Check size={16} className="mr-2" />
+                Approve
+              </Button>
+            </div>
+          </div>
+
+          {/* Content Area */}
+          <div className="flex-1 p-6 overflow-y-auto">
+            {selectedRequirement ? (
+              <Card>
+                <CardContent className="p-6">
+                  <Tabs defaultValue="details">
+                    <TabsList>
+                      <TabsTrigger value="details">Details</TabsTrigger>
+                      <TabsTrigger value="ai-insights">AI Insights</TabsTrigger>
+                      <TabsTrigger value="relationships">Relationships</TabsTrigger>
+                      <TabsTrigger value="history">History</TabsTrigger>
+                    </TabsList>
+                    
+                    <TabsContent value="details" className="mt-4">
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700">ID</label>
+                          <Input value={selectedRequirement.id} readOnly />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700">Title</label>
+                          <Input value={selectedRequirement.title} />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700">Description</label>
+                          <textarea 
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                            rows={4}
+                            value={selectedRequirement.description}
+                          />
+                        </div>
+                        <div className="grid grid-cols-3 gap-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700">Type</label>
+                            <Input value={selectedRequirement.type} />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700">Priority</label>
+                            <Input value={selectedRequirement.priority} />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700">Status</label>
+                            <Input value={selectedRequirement.status} />
+                          </div>
+                        </div>
+                      </div>
+                    </TabsContent>
+
+                    <TabsContent value="ai-insights" className="mt-4">
+                      <AIAnalysisPanel insights={mockAIInsights} />
+                    </TabsContent>
+                  </Tabs>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="text-center text-gray-500 mt-10">
+                Select a requirement to view details
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Right Sidebar - AI Assistant & Collaboration */}
+        <div className="w-80 bg-white border-l flex flex-col">
+          {/* AI Assistant Section */}
+          <div className="p-4 border-b">
+            <h3 className="font-medium mb-4">AI Assistant</h3>
+            <div className="space-y-2">
+              <Button variant="outline" className="w-full justify-start">
+                <Plus size={16} className="mr-2" />
+                Generate Requirements
+              </Button>
+              <Button variant="outline" className="w-full justify-start">
+                <RefreshCw size={16} className="mr-2" />
+                Augment Requirements
+              </Button>
+              <Button variant="outline" className="w-full justify-start">
+                <Search size={16} className="mr-2" />
+                Impact Analysis
+              </Button>
+            </div>
+          </div>
+
+          {/* Collaboration Section */}
+          <div className="p-4 border-b">
+            <h3 className="font-medium mb-4">Active Collaborators</h3>
+            <div className="space-y-2">
+              {activeCollaborators.map(user => (
+                <div key={user.id} className="flex items-center space-x-2">
+                  <div className={`w-2 h-2 rounded-full ${
+                    user.status === 'active' ? 'bg-green-500' : 'bg-yellow-500'
+                  }`} />
+                  <span>{user.name}</span>
+                  <span className="text-xs text-gray-500">
+                    {user.status === 'active' ? 'editing' : 'reviewing'}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Template Management */}
+          <div className="p-4 border-b">
+            <h3 className="font-medium mb-4">Templates</h3>
+            <div className="space-y-2">
+              <Button variant="outline" className="w-full justify-start">
+                <Layout size={16} className="mr-2" />
+                Manage Templates
+              </Button>
+            </div>
+          </div>
+
+          {/* Activity History */}
+          <div className="flex-1 p-4 overflow-y-auto">
+            <h3 className="font-medium mb-4">Recent Activity</h3>
+            <div className="space-y-2">
+              <div className="text-sm text-gray-600">
+                <History size={14} className="inline mr-2" />
+                John updated REQ-001
+                <div className="text-xs text-gray-500 ml-6">5 minutes ago</div>
+              </div>
+              <div className="text-sm text-gray-600">
+                <MessageSquare size={14} className="inline mr-2" />
+                Jane commented on REQ-002
+                <div className="text-xs text-gray-500 ml-6">10 minutes ago</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
