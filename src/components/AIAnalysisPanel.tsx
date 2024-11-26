@@ -1,92 +1,136 @@
 import React from 'react';
 import { AIRequirementInsights } from '../types/AIAnalysis';
 import { Card } from './ui/card';
-import { Button } from './ui/button';
+import { Brain, Zap, History, Lightbulb, BarChart } from 'lucide-react';
 
 interface AIAnalysisPanelProps {
   insights: AIRequirementInsights;
 }
 
 export const AIAnalysisPanel: React.FC<AIAnalysisPanelProps> = ({ insights }) => {
+  const features = [
+    {
+      title: 'Intelligent Analysis',
+      icon: <Brain className="w-6 h-6 text-blue-500" />,
+      items: [
+        'Real-time requirement quality scoring',
+        'Gap detection and analysis',
+        'Context-aware suggestions based on current work',
+        'Terminology standardization recommendations'
+      ]
+    },
+    {
+      title: 'Smart Suggestions',
+      icon: <Zap className="w-6 h-6 text-yellow-500" />,
+      items: [
+        'Proactive recommendations for improvements',
+        'Relationship detection between requirements',
+        'Automatic test case generation suggestions',
+        'Industry standard compliance checks'
+      ]
+    },
+    {
+      title: 'Learning Patterns',
+      icon: <History className="w-6 h-6 text-purple-500" />,
+      items: [
+        'Team pattern recognition',
+        'Workflow optimization suggestions',
+        'Historical analysis of similar requirements',
+        'Common review patterns'
+      ]
+    },
+    {
+      title: 'Context-Aware Features',
+      icon: <Lightbulb className="w-6 h-6 text-green-500" />,
+      items: [
+        'Real-time analysis of requirement text',
+        'Ambiguity detection',
+        'Automatic relationship suggestions',
+        'Performance metric recommendations'
+      ]
+    },
+    {
+      title: 'AI Insights',
+      icon: <BarChart className="w-6 h-6 text-red-500" />,
+      items: [
+        'Quality scoring with detailed breakdowns',
+        'Gap analysis',
+        'Impact assessment',
+        'Relationship mapping'
+      ]
+    }
+  ];
+
   return (
-    <Card className="p-4 space-y-4 bg-white shadow-md rounded-lg">
-      <div className="text-lg font-bold text-blue-600">AI Requirement Insights</div>
-      
-      <section className="mb-4">
-        <h3 className="font-semibold text-gray-700 mb-2">Quality Score</h3>
-        <div className="grid grid-cols-3 gap-2">
-          {Object.entries(insights.qualityScore).map(([key, value]) => (
-            <div key={key} className="bg-gray-100 p-2 rounded">
-              <span className="text-sm text-gray-600 capitalize">{key}</span>
-              <div className="text-md font-bold">{value.toFixed(2)}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="mb-4">
-        <h3 className="font-semibold text-gray-700 mb-2">Gap Analysis</h3>
-        <div className="space-y-2">
-          {insights.gapAnalysis.missingElements.map((element, index) => (
-            <div key={index} className="bg-yellow-50 p-2 rounded">
-              <span className="text-yellow-600">Missing: {element}</span>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="mb-4">
-        <h3 className="font-semibold text-gray-700 mb-2">Terminology Standardization</h3>
-        <div className="space-y-2">
-          {insights.terminologyStandardization.map((term, index) => (
-            <div key={index} className="bg-green-50 p-2 rounded flex justify-between items-center">
-              <div>
-                <span className="text-sm text-gray-600">Original: {term.originalTerm}</span>
-                <div className="font-bold text-green-600">Recommended: {term.recommendedTerm}</div>
-              </div>
-              <span className="text-sm text-gray-500">Confidence: {term.confidence.toFixed(2)}%</span>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="mb-4">
-        <h3 className="font-semibold text-gray-700 mb-2">Test Case Suggestions</h3>
-        <div className="space-y-2">
-          {insights.testCaseSuggestions.map((suggestion, index) => (
-            <div key={index} className="bg-blue-50 p-2 rounded">
-              <div className="font-bold">{suggestion.testScenario}</div>
-              <div className="text-sm text-gray-600">
-                Type: {suggestion.testType} | Complexity: {suggestion.complexity}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="mb-4">
-        <h3 className="font-semibold text-gray-700 mb-2">Compliance Checks</h3>
-        <div className="space-y-2">
-          {insights.complianceChecks.map((check, index) => (
-            <div key={index} className={`p-2 rounded ${
-              check.status === 'compliant' ? 'bg-green-50 text-green-700' :
-              check.status === 'partial' ? 'bg-yellow-50 text-yellow-700' :
-              'bg-red-50 text-red-700'
-            }`}>
-              <div className="font-bold">{check.standard}</div>
-              <div className="text-sm">Status: {check.status}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <div className="flex justify-end space-x-2">
-        <Button variant="outline">Detailed Report</Button>
-        <Button>Apply Suggestions</Button>
+    <div className="space-y-6">
+      <div className="text-2xl font-bold text-gray-900 mb-8">
+        AI Capability Overview
       </div>
-    </Card>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {features.map((feature, index) => (
+          <Card key={index} className="p-6">
+            <div className="flex items-center space-x-3 mb-4">
+              {feature.icon}
+              <h3 className="text-lg font-semibold text-gray-900">
+                {feature.title}
+              </h3>
+            </div>
+            <ul className="space-y-2">
+              {feature.items.map((item, itemIndex) => (
+                <li key={itemIndex} className="flex items-start space-x-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-2" />
+                  <span className="text-gray-700">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </Card>
+        ))}
+      </div>
+
+      <Card className="p-6 mt-6">
+        <div className="text-lg font-semibold mb-4">Current Analysis Results</div>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <div className="text-sm font-medium text-gray-500">Quality Score</div>
+            <div className="text-2xl font-bold text-blue-600">
+              {(insights.qualityScore.overallScore * 100).toFixed(0)}%
+            </div>
+          </div>
+          <div>
+            <div className="text-sm font-medium text-gray-500">Confidence Level</div>
+            <div className="text-2xl font-bold text-green-600">
+              {(insights.performanceMetrics.confidenceLevel * 100).toFixed(0)}%
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-6">
+          <div className="text-sm font-medium text-gray-500 mb-2">Key Findings</div>
+          <ul className="space-y-2">
+            {insights.gapAnalysis.recommendedActions.map((action, index) => (
+              <li key={index} className="flex items-start space-x-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-yellow-500 mt-2" />
+                <span className="text-gray-700">{action}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="mt-6">
+          <div className="text-sm font-medium text-gray-500 mb-2">Suggested Improvements</div>
+          <ul className="space-y-2">
+            {insights.terminologyStandardization.map((term, index) => (
+              <li key={index} className="flex items-start space-x-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-2" />
+                <span className="text-gray-700">
+                  Replace "{term.originalTerm}" with "{term.recommendedTerm}"
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </Card>
+    </div>
   );
 };
-
-// Export an empty object to make this a module
-export {};
