@@ -1,0 +1,92 @@
+[
+  {
+    "text": "The system implements AES-256 encryption for all data transmissions. This ensures compliance with industry standards for data security. All sensitive information is encrypted both at rest and in transit.",
+    "metadata": {
+      "id": "sec001",
+      "category": "security",
+      "author": "Security Team",
+      "date": "2023-11-01"
+    }
+  },
+  {
+    "text": "User authentication requires both a password and a 2FA token. The system integrates with existing SSO providers and supports hardware security keys. Multi-factor authentication is mandatory for all privileged operations.",
+    "metadata": {
+      "id": "sec002",
+      "category": "security",
+      "author": "Security Team",
+      "date": "2023-11-01"
+    }
+  },
+  {
+    "text": "Error handling has been improved with comprehensive logging and automatic retry mechanisms. All errors are reported to the centralized monitoring system with detailed stack traces and context information. Critical errors trigger immediate alerts to the on-call team.",
+    "metadata": {
+      "id": "ops001",
+      "category": "operations",
+      "author": "DevOps Team",
+      "date": "2023-11-02"
+    }
+  },
+  {
+    "text": "The system architecture follows a microservices pattern with containerized deployments. Each service is independently scalable and maintains its own database. Service communication is handled through a message queue system with guaranteed delivery.",
+    "metadata": {
+      "id": "arch001",
+      "category": "architecture",
+      "author": "Architecture Team",
+      "date": "2023-11-03"
+    }
+  },
+  {
+    "text": "Performance monitoring includes detailed metrics collection for all critical operations. The monitoring system tracks latency, throughput, error rates, and resource utilization. Custom dashboards provide real-time visibility into system health.",
+    "metadata": {
+      "id": "ops002",
+      "category": "operations",
+      "author": "DevOps Team",
+      "date": "2023-11-02"
+    }
+  },
+  {
+    "text": "API endpoints are secured using OAuth 2.0 with JWT tokens. All requests must include a valid access token, and permissions are enforced through role-based access control (RBAC). Token expiration and refresh mechanisms are implemented according to security best practices.",
+    "metadata": {
+      "id": "sec003",
+      "category": "security",
+      "author": "Security Team",
+      "date": "2023-11-01"
+    }
+  },
+  {
+    "text": "Database backups are performed hourly with point-in-time recovery capability. Backup data is encrypted and stored in geographically distributed locations. Recovery procedures are tested monthly to ensure data can be restored within the required SLA.",
+    "metadata": {
+      "id": "ops003",
+      "category": "operations",
+      "author": "DevOps Team",
+      "date": "2023-11-02"
+    }
+  },
+  {
+    "text": "The front-end application is built using React with TypeScript. State management is handled through Redux with middleware for side effects. The UI components follow the Material Design system and are fully responsive.",
+    "metadata": {
+      "id": "dev001",
+      "category": "development",
+      "author": "Frontend Team",
+      "date": "2023-11-04"
+    }
+  },
+  {
+    "text": "Continuous Integration/Continuous Deployment (CI/CD) pipelines automate the build, test, and deployment processes. Code changes trigger automated tests, security scans, and performance benchmarks. Deployments can be rolled back instantly if issues are detected.",
+    "metadata": {
+      "id": "ops004",
+      "category": "operations",
+      "author": "DevOps Team",
+      "date": "2023-11-02"
+    }
+  },
+  {
+    "text": "The system uses Redis for caching frequently accessed data and session management. Cache invalidation strategies are implemented to ensure data consistency. Cache hit rates are monitored and cache sizes are automatically adjusted based on usage patterns.",
+    "metadata": {
+      "id": "arch002",
+      "category": "architecture",
+      "author": "Architecture Team",
+      "date": "2023-11-03"
+    }
+  }
+]

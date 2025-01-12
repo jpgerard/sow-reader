@@ -1,0 +1,140 @@
+{
+  "high_performance": {
+    "comment": "Configuration optimized for high-performance retrieval with caching",
+    "neo4j_uri": "bolt://localhost:7687",
+    "neo4j_user": "neo4j",
+    "neo4j_password": "password",
+    "embedding_model": "sentence-transformers/all-mpnet-base-v2",
+    "entity_model": "en_core_web_sm",
+    "prometheus_port": 8000,
+    "cache_dir": "./cache",
+    "search_config": {
+      "vector_weight": 0.6,
+      "graph_weight": 0.2,
+      "entity_weight": 0.2,
+      "max_results": 3,
+      "min_score": 0.5,
+      "use_community_boost": false,
+      "cache_results": true,
+      "cache_ttl_seconds": 3600
+    },
+    "relationship_config": {
+      "similarity_threshold": 0.8,
+      "max_relationships_per_node": 20,
+      "use_entity_relationships": false,
+      "use_community_detection": false
+    },
+    "rag_config": {
+      "model_name": "claude-2",
+      "temperature": 0.3,
+      "max_tokens": 500,
+      "context_limit": 2000,
+      "top_k_results": 3
+    }
+  },
+  "high_accuracy": {
+    "comment": "Configuration optimized for high-accuracy search with comprehensive analysis",
+    "neo4j_uri": "bolt://localhost:7687",
+    "neo4j_user": "neo4j",
+    "neo4j_password": "password",
+    "embedding_model": "sentence-transformers/all-mpnet-base-v2",
+    "entity_model": "en_core_web_lg",
+    "prometheus_port": 8000,
+    "cache_dir": "./cache",
+    "search_config": {
+      "vector_weight": 0.3,
+      "graph_weight": 0.4,
+      "entity_weight": 0.3,
+      "max_results": 10,
+      "min_score": 0.1,
+      "use_community_boost": true,
+      "community_boost_factor": 1.5,
+      "cache_results": false
+    },
+    "relationship_config": {
+      "similarity_threshold": 0.6,
+      "max_relationships_per_node": 100,
+      "community_size_threshold": 50,
+      "use_entity_relationships": true,
+      "use_community_detection": true
+    },
+    "rag_config": {
+      "model_name": "claude-2",
+      "temperature": 0.7,
+      "max_tokens": 2000,
+      "context_limit": 8000,
+      "top_k_results": 10,
+      "similarity_threshold": 0.5
+    }
+  },
+  "balanced": {
+    "comment": "Balanced configuration for general use",
+    "neo4j_uri": "bolt://localhost:7687",
+    "neo4j_user": "neo4j",
+    "neo4j_password": "password",
+    "embedding_model": "sentence-transformers/all-mpnet-base-v2",
+    "entity_model": "en_core_web_sm",
+    "prometheus_port": 8000,
+    "cache_dir": "./cache",
+    "search_config": {
+      "vector_weight": 0.4,
+      "graph_weight": 0.3,
+      "entity_weight": 0.3,
+      "max_results": 5,
+      "min_score": 0.3,
+      "use_community_boost": true,
+      "community_boost_factor": 1.2,
+      "cache_results": true,
+      "cache_ttl_seconds": 1800
+    },
+    "relationship_config": {
+      "similarity_threshold": 0.7,
+      "max_relationships_per_node": 50,
+      "community_size_threshold": 100,
+      "use_entity_relationships": true,
+      "use_community_detection": true
+    },
+    "rag_config": {
+      "model_name": "claude-2",
+      "temperature": 0.5,
+      "max_tokens": 1000,
+      "context_limit": 4000,
+      "top_k_results": 5,
+      "similarity_threshold": 0.6
+    }
+  },
+  "memory_optimized": {
+    "comment": "Configuration optimized for systems with limited memory",
+    "neo4j_uri": "bolt://localhost:7687",
+    "neo4j_user": "neo4j",
+    "neo4j_password": "password",
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "entity_model": "en_core_web_sm",
+    "prometheus_port": 8000,
+    "cache_dir": "./cache",
+    "search_config": {
+      "vector_weight": 0.5,
+      "graph_weight": 0.3,
+      "entity_weight": 0.2,
+      "max_results": 3,
+      "min_score": 0.5,
+      "use_community_boost": false,
+      "cache_results": true,
+      "cache_ttl_seconds": 7200
+    },
+    "relationship_config": {
+      "similarity_threshold": 0.8,
+      "max_relationships_per_node": 30,
+      "use_entity_relationships": true,
+      "use_community_detection": false
+    },
+    "rag_config": {
+      "model_name": "claude-2",
+      "temperature": 0.4,
+      "max_tokens": 800,
+      "context_limit": 2000,
+      "top_k_results": 3,
+      "similarity_threshold": 0.7
+    }
+  }
+}
