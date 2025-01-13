@@ -1,118 +1,62 @@
 # SOW Analyzer
 
-A powerful tool for analyzing Statement of Work (SOW) requirements against proposals using Claude's LLM technology.
-
-## Background
-
-The SOW Analyzer automates the process of analyzing Statement of Work requirements against proposals. It helps ensure comprehensive coverage and compliance by:
-
-- Extracting and classifying requirements from SOW documents
-- Mapping requirements to proposal sections
-- Assessing compliance and confidence levels
-- Generating improvement suggestions
-- Providing structured output in Excel format
+A Streamlit application for analyzing Statement of Work (SOW) documents and comparing them against proposal documents. The app extracts requirements from SOWs and uses Claude AI to analyze proposal compliance.
 
 ## Features
 
-- **Document Support**: Process PDF and Word documents
-- **Smart Analysis**: LLM-powered requirement identification and mapping
-- **Compliance Checking**: Automated assessment of proposal coverage
-- **Export Capability**: Structured Excel output with detailed analysis
+- Extract requirements from SOW documents (PDF/DOCX)
+- Categorize requirements by type (Mandatory/Informative)
+- Analyze proposal documents against SOW requirements
+- Generate compliance reports with section matching
+- Export results to CSV and Excel formats
 
-## Setup
+## Deployment
 
-1. **Environment Setup**
+### Streamlit Cloud
+
+1. Fork this repository
+2. Sign up for [Streamlit Cloud](https://streamlit.io/cloud)
+3. Create a new app and connect it to your forked repository
+4. Add your Anthropic API key in Streamlit Cloud:
+   - Go to your app settings
+   - Click on "Secrets"
+   - Add your secrets in the following format:
+     ```toml
+     [general]
+     ANTHROPIC_API_KEY = "your-api-key-here"
+     ```
+
+### Local Development
+
+1. Clone the repository
+2. Install dependencies:
    ```bash
-   # Create and activate virtual environment
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   
-   # Install dependencies
    pip install -r requirements.txt
    ```
-
-2. **Environment Variables**
-   Create a `.env` file with:
+3. Create `.streamlit/secrets.toml` with your Anthropic API key:
+   ```toml
+   [general]
+   ANTHROPIC_API_KEY = "your-api-key-here"
    ```
-   ANTHROPIC_API_KEY=your_claude_api_key
-   ```
-
-## Usage
-
-1. **Launch Application**
+4. Run the app:
    ```bash
    streamlit run app.py
    ```
 
-2. **Upload Documents**
-   - Use the SOW Document uploader for your Statement of Work (PDF/DOCX)
-   - Use the Proposal Document uploader for your proposal document (PDF/DOCX)
+## Usage
 
-3. **View Analysis**
-   Navigate through:
-   - Analysis Results: Overview of requirement mapping
-   - Document Sections: Detailed document structure
-   - Requirements: Extracted requirements list
+1. Upload a SOW document (PDF/DOCX)
+2. (Optional) Upload a proposal document to analyze compliance
+3. View extracted requirements and analysis results
+4. Export results using the provided buttons
 
-4. **Export Results**
-   - Use the Export button to download analysis in Excel format
-   - Results include:
-     * SOW Section
-     * Requirement details
-     * Classification
-     * Proposal mapping
-     * Compliance status
-     * Confidence level
-     * Improvement suggestions
+## Requirements
 
-## Technical Details
+- Python 3.8+
+- See requirements.txt for full list of dependencies
 
-### Document Processing
-- PDFPlumber for PDF parsing
-- python-docx for Word documents
-- Structured text extraction with format preservation
+## Notes
 
-### Analysis Engine
-- Claude API integration
-- Semantic matching
-- Requirement classification
-- Compliance assessment
-
-### User Interface
-- Streamlit-based interface
-- Intuitive file upload
-- Interactive results display
-- Excel export using openpyxl
-
-## Development
-
-### Testing
-```bash
-# Run tests
-python -m pytest tests/
-
-# Run with coverage
-python -m pytest --cov=src tests/
-```
-
-### Project Structure
-```
-src/
-├── core/               # Core processing logic
-├── entity_processing/  # Entity extraction
-├── graph_construction/ # Relationship building
-├── llm/               # Claude integration
-├── monitoring/        # System monitoring
-└── search/           # Search functionality
-```
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
-
-## License
-
-[License details to be added]
+- The app uses spaCy for NLP processing
+- Claude AI (via Anthropic) is used for proposal analysis
+- Temporary files are automatically cleaned up after processing

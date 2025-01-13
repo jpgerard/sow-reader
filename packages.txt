@@ -1,0 +1,6 @@
+python3-dev
+build-essential
+poppler-utils
+libpoppler-cpp-dev
+pkg-config
+python3-pip
