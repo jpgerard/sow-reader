@@ -11,4 +11,3 @@ python-dotenv
 anthropic==0.7.0
 httpx>=0.24.0
 openpyxl
-anyio>=4.8.0
