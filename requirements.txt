@@ -9,5 +9,5 @@ pandas
 python-docx
 python-dotenv
 anthropic==0.7.0
-httpx>=0.24.0
+httpx==0.23.0
 openpyxl
