@@ -5,6 +5,7 @@ from pathlib import Path
 import pandas as pd
 import os
 import json
+import io
 from dotenv import load_dotenv
 import anthropic
 import pdfplumber
@@ -450,23 +451,42 @@ Return a JSON object with these exact fields:
                 # Export options
                 col1, col2, col3 = st.columns(3)
                 with col1:
-                    if st.button("Export Requirements (CSV)"):
-                        st.session_state.processor.save_requirements_to_csv(requirements)
-                        st.success("Requirements exported to extracted_requirements.csv")
+                    # Convert requirements to CSV for download
+                    csv_data = pd.DataFrame(requirements).to_csv(index=False)
+                    st.download_button(
+                        "Download Requirements (CSV)",
+                        csv_data,
+                        "sow_requirements.csv",
+                        "text/csv",
+                        key='download-csv'
+                    )
                 
                 with col2:
-                    if st.button("Export Requirements (Excel)"):
-                        df = pd.DataFrame(requirements)
-                        # Save as Excel file
-                        df.to_excel("sow_requirements.xlsx", index=False, engine='openpyxl')
-                        st.success("Requirements exported to sow_requirements.xlsx")
+                    # Convert requirements to Excel for download
+                    buffer = io.BytesIO()
+                    with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
+                        pd.DataFrame(requirements).to_excel(writer, index=False)
+                    st.download_button(
+                        "Download Requirements (Excel)",
+                        buffer.getvalue(),
+                        "sow_requirements.xlsx",
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        key='download-excel'
+                    )
                 
                 with col3:
-                    if st.session_state.analysis_results and st.button("Export Analysis (Excel)"):
-                        df = pd.DataFrame(st.session_state.analysis_results)
-                        # Save as Excel file
-                        df.to_excel("sow_analysis_results.xlsx", index=False, engine='openpyxl')
-                        st.success("Analysis exported to sow_analysis_results.xlsx")
+                    if st.session_state.analysis_results:
+                        # Convert analysis results to Excel for download
+                        analysis_buffer = io.BytesIO()
+                        with pd.ExcelWriter(analysis_buffer, engine='openpyxl') as writer:
+                            pd.DataFrame(st.session_state.analysis_results).to_excel(writer, index=False)
+                        st.download_button(
+                            "Download Analysis (Excel)",
+                            analysis_buffer.getvalue(),
+                            "sow_analysis_results.xlsx",
+                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                            key='download-analysis'
+                        )
                 
             except Exception as e:
                 st.error(f"Error processing document: {str(e)}")
