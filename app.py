@@ -18,14 +18,16 @@ load_dotenv()
 def check_api_key():
     """Check if ANTHROPIC_API_KEY is set and valid"""
     try:
-        api_key = st.secrets["general"]["ANTHROPIC_API_KEY"]
+        api_key = os.getenv("ANTHROPIC_API_KEY")
+        if not api_key:
+            api_key = st.secrets["general"]["ANTHROPIC_API_KEY"]
         if not api_key or api_key == 'your-api-key-here':
-            st.error('Please set your ANTHROPIC_API_KEY in Streamlit secrets')
-            return False
-        return True
+            st.error('Please set your ANTHROPIC_API_KEY in environment variables or Streamlit secrets')
+            return False, None
+        return True, api_key
     except Exception:
-        st.error('ANTHROPIC_API_KEY not found in Streamlit secrets')
-        return False
+        st.error('ANTHROPIC_API_KEY not found in environment variables or Streamlit secrets')
+        return False, None
 
 def extract_proposal_sections(proposal_text: str) -> Dict[str, str]:
     """Extract sections from proposal text."""
@@ -69,13 +71,13 @@ def main():
     st.write("Extract and analyze requirements from Statement of Work (SOW) documents")
     
     # Check API key but don't stop execution
-    has_api = check_api_key()
-    
+    has_api, api_key = check_api_key()
     
     # Initialize session state
     if 'initialized' not in st.session_state:
         st.session_state.processor = SOWProcessor()
-        st.session_state.client = anthropic.Anthropic()
+        if has_api:
+            st.session_state.client = anthropic.Anthropic(api_key=api_key)
         st.session_state.requirements = None
         st.session_state.proposal_text = None
         st.session_state.analysis_results = None
