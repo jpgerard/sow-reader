@@ -17,7 +17,7 @@ load_dotenv()
 def check_api_key():
     """Check if ANTHROPIC_API_KEY is set and valid"""
     try:
-        api_key = st.secrets["ANTHROPIC_API_KEY"]
+        api_key = st.secrets["general"]["ANTHROPIC_API_KEY"]
         if not api_key or api_key == 'your-api-key-here':
             st.error('Please set your ANTHROPIC_API_KEY in Streamlit secrets')
             return False
