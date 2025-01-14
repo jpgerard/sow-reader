@@ -274,23 +274,29 @@ Return a JSON object with these exact fields:
     "suggestions": ["List", "of", "improvement", "suggestions"]
 }}"""
                                 
-                                if has_api:
-                                    response = st.session_state.client.messages.create(
-                                        model="claude-3-opus-20240229",
-                                        max_tokens=1000,
-                                        messages=[{
-                                            "role": "user",
-                                            "content": prompt
-                                        }]
-                                    )
-                                else:
-                                    st.error("Cannot analyze proposal without ANTHROPIC_API_KEY")
-                                    break
-                                
                                 try:
-                                    # Extract JSON from response
-                                    response_text = response.content[0].text.strip()
-                                    
+                                    if has_api:
+                                        try:
+                                            response = st.session_state.client.messages.create(
+                                                model="claude-3-opus-20240229",
+                                                max_tokens=1000,
+                                                messages=[{
+                                                    "role": "system",
+                                                    "content": "You are a requirements analysis assistant that helps analyze SOW requirements against proposal documents."
+                                                }, {
+                                                    "role": "user",
+                                                    "content": prompt
+                                                }]
+                                            )
+                                            response_text = response.content[0].text if response.content else ""
+                                            response_text = response_text.strip()
+                                        except Exception as e:
+                                            st.error(f"Error calling Anthropic API: {str(e)}")
+                                            response_text = ""
+                                    else:
+                                        st.error("Cannot analyze proposal without ANTHROPIC_API_KEY")
+                                        break
+
                                     # If no proposal text, return a default analysis
                                     if not proposal_text or not proposal_text.strip():
                                         analysis = {
