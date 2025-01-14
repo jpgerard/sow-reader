@@ -17,7 +17,7 @@ load_dotenv()
 def check_api_key():
     """Check if ANTHROPIC_API_KEY is set and valid"""
     try:
-        api_key = st.secrets["general"]["ANTHROPIC_API_KEY"]
+        api_key = st.secrets["ANTHROPIC_API_KEY"]
         if not api_key or api_key == 'your-api-key-here':
             st.error('Please set your ANTHROPIC_API_KEY in Streamlit secrets')
             return False
@@ -74,8 +74,7 @@ def main():
     # Initialize session state
     if 'initialized' not in st.session_state:
         st.session_state.processor = SOWProcessor()
-        api_key = st.secrets["general"]["ANTHROPIC_API_KEY"]
-        st.session_state.client = anthropic.Anthropic(api_key=api_key)
+        st.session_state.client = anthropic.Anthropic()
         st.session_state.requirements = None
         st.session_state.proposal_text = None
         st.session_state.analysis_results = None
@@ -94,12 +93,27 @@ def main():
         )
     
     with col2:
-        st.subheader("Proposal Document")
+        st.subheader("Proposal Document (Optional)")
         proposal_file = st.file_uploader(
-            "Upload Proposal Document (PDF/DOCX)",
+            "Upload Proposal Document (Optional) (PDF/DOCX)",
             type=['pdf', 'docx'],
             key='proposal_uploader'
         )
+        
+        # Add checkbox for proposal matching
+        perform_matching = st.checkbox(
+            "Perform proposal matching analysis",
+            value=False,
+            help="Enable to analyze requirements against the proposal document",
+            key="perform_matching"
+        )
+        
+        # Clear analysis results when checkbox state changes
+        if "last_matching_state" not in st.session_state:
+            st.session_state.last_matching_state = perform_matching
+        if st.session_state.last_matching_state != perform_matching:
+            st.session_state.analysis_results = None
+            st.session_state.last_matching_state = perform_matching
         
         if proposal_file:
             try:
@@ -233,13 +247,32 @@ def main():
                 for cat, count in sorted(categories.items()):
                     st.metric(cat, count)
                 
-                # Display requirements table with proposal matching if available
+                # Display requirements table
                 st.subheader("Requirements Analysis")
                 
-                # Check if we have a proposal to analyze against
+                # Always show basic requirements table first
+                df = pd.DataFrame(requirements)
+                st.dataframe(
+                    df,
+                    column_config={
+                        "section_id": "Section",
+                        "text": "Requirement",
+                        "type": "Type",
+                        "category": "Category",
+                        "confidence": st.column_config.NumberColumn(
+                            "Confidence",
+                            help="Confidence score (0-1)",
+                            format="%.2f"
+                        )
+                    },
+                    hide_index=True
+                )
+                
+                # Only perform proposal matching if enabled and proposal is available
                 if not proposal_file:
-                    st.info("Upload a proposal document to analyze requirements compliance")
-                elif st.session_state.proposal_text and not st.session_state.analysis_results:
+                    if perform_matching:
+                        st.info("Upload a proposal document to analyze requirements compliance")
+                elif st.session_state.proposal_text and perform_matching and not st.session_state.analysis_results:
                     # Start analysis
                     with st.spinner("Analyzing requirements against proposal..."):
                             results = []
@@ -275,27 +308,23 @@ Return a JSON object with these exact fields:
     "suggestions": ["List", "of", "improvement", "suggestions"]
 }}"""
                                 
+                                if has_api:
+                                    response = st.session_state.client.messages.create(
+                                        model="claude-3-opus-20240229",
+                                        max_tokens=1000,
+                                        messages=[{
+                                            "role": "user",
+                                            "content": prompt
+                                        }]
+                                    )
+                                else:
+                                    st.error("Cannot analyze proposal without ANTHROPIC_API_KEY")
+                                    break
+                                
                                 try:
-                                    if has_api:
-                                        try:
-                                            response = st.session_state.client.messages.create(
-                                                model="claude-3-opus-20240229",
-                                                max_tokens=1000,
-                                                system="You are a requirements analysis assistant that helps analyze SOW requirements against proposal documents.",
-                                                messages=[{
-                                                    "role": "user",
-                                                    "content": prompt
-                                                }]
-                                            )
-                                            response_text = response.content[0].text if response.content else ""
-                                            response_text = response_text.strip()
-                                        except Exception as e:
-                                            st.error(f"Error calling Anthropic API: {str(e)}")
-                                            response_text = ""
-                                    else:
-                                        st.error("Cannot analyze proposal without ANTHROPIC_API_KEY")
-                                        break
-
+                                    # Extract JSON from response
+                                    response_text = response.content[0].text.strip()
+                                    
                                     # If no proposal text, return a default analysis
                                     if not proposal_text or not proposal_text.strip():
                                         analysis = {
@@ -419,14 +448,21 @@ Return a JSON object with these exact fields:
                     )
                 
                 # Export options
-                col1, col2 = st.columns(2)
+                col1, col2, col3 = st.columns(3)
                 with col1:
-                    if st.button("Export Requirements"):
+                    if st.button("Export Requirements (CSV)"):
                         st.session_state.processor.save_requirements_to_csv(requirements)
                         st.success("Requirements exported to extracted_requirements.csv")
                 
                 with col2:
-                    if st.session_state.analysis_results and st.button("Export Analysis"):
+                    if st.button("Export Requirements (Excel)"):
+                        df = pd.DataFrame(requirements)
+                        # Save as Excel file
+                        df.to_excel("sow_requirements.xlsx", index=False, engine='openpyxl')
+                        st.success("Requirements exported to sow_requirements.xlsx")
+                
+                with col3:
+                    if st.session_state.analysis_results and st.button("Export Analysis (Excel)"):
                         df = pd.DataFrame(st.session_state.analysis_results)
                         # Save as Excel file
                         df.to_excel("sow_analysis_results.xlsx", index=False, engine='openpyxl')
