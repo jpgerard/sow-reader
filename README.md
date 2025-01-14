@@ -1,6 +1,18 @@
 # SOW Analyzer
 
-A Streamlit application for analyzing Statement of Work (SOW) documents and comparing them against proposal documents. The app extracts requirements from SOWs and uses Claude AI to analyze proposal compliance.
+A Streamlit application for analyzing Statement of Work (SOW) documents and comparing them against proposal documents. The app extracts requirements from SOWs and uses Claude-3 AI to analyze proposal compliance.
+
+## Latest Working Version
+
+The current working version uses:
+- Claude-3 Opus (model: claude-3-opus-20240229)
+- Anthropic API v0.42.0
+- Streamlit for the web interface
+
+Key requirements for proper functionality:
+1. Valid Anthropic API key configured in Streamlit secrets
+2. Correct API initialization and message format
+3. Python 3.8+ environment
 
 ## Features
 
@@ -58,5 +70,9 @@ A Streamlit application for analyzing Statement of Work (SOW) documents and comp
 ## Notes
 
 - The app uses spaCy for NLP processing
-- Claude AI (via Anthropic) is used for proposal analysis
+- Claude-3 AI (via Anthropic API) is used for proposal analysis with the following configuration:
+  - Model: claude-3-opus-20240229
+  - System message set at top level
+  - Messages formatted according to Claude-3 requirements
 - Temporary files are automatically cleaned up after processing
+- API calls are properly authenticated using the configured API key
