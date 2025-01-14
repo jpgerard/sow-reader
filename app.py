@@ -281,10 +281,8 @@ Return a JSON object with these exact fields:
                                             response = st.session_state.client.messages.create(
                                                 model="claude-3-opus-20240229",
                                                 max_tokens=1000,
+                                                system="You are a requirements analysis assistant that helps analyze SOW requirements against proposal documents.",
                                                 messages=[{
-                                                    "role": "system",
-                                                    "content": "You are a requirements analysis assistant that helps analyze SOW requirements against proposal documents."
-                                                }, {
                                                     "role": "user",
                                                     "content": prompt
                                                 }]
