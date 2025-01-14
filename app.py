@@ -74,7 +74,8 @@ def main():
     # Initialize session state
     if 'initialized' not in st.session_state:
         st.session_state.processor = SOWProcessor()
-        st.session_state.client = anthropic.Anthropic()
+        api_key = st.secrets["general"]["ANTHROPIC_API_KEY"]
+        st.session_state.client = anthropic.Anthropic(api_key=api_key)
         st.session_state.requirements = None
         st.session_state.proposal_text = None
         st.session_state.analysis_results = None
