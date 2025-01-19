@@ -13,9 +13,19 @@
 ### Backend Components
 - Python-based document processing
 - LLM integration for analysis
-- Entity extraction system
-- Graph-based relationship building
-- Hybrid search capabilities
+- Hybrid search system:
+  - Vector-based semantic search
+  - Text-based matching
+  - Section ID matching
+- Export capabilities
+
+### Core Libraries
+- sentence-transformers for embeddings
+- faiss-cpu for vector search
+- pdfplumber for PDF processing
+- python-docx for DOCX processing
+- numpy for numerical operations
+- pandas for data handling
 
 ### Development Setup
 - Python environment
@@ -30,9 +40,10 @@
 - /src
   - Core processing:
     - Entity processing in /entity_processing
-    - Graph construction in /graph_construction
-    - LLM integration in /llm
     - Search functionality in /search
+      - vector_search.py for semantic search
+      - hybrid_search.py for combined search
+      - proposal_matcher.py for matching logic
     - System monitoring in /monitoring
   - Streamlit interface:
     - Main app in app.py
@@ -48,7 +59,7 @@
 
 #### Prerequisites
 1. GitHub Account
-2. Streamlit Cloud Account (https://share.streamlit.io)
+2. Streamlit Cloud Account (https://share.streamlit.app)
 3. Required Files:
    - app.py
    - requirements.txt
@@ -86,7 +97,7 @@
      ```
 
 3. Set Up Streamlit Cloud
-   - Go to share.streamlit.io
+   - Go to share.streamlit.app
    - Sign in with GitHub
    - Click "New app"
    - Select your repository

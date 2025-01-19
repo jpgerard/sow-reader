@@ -20,6 +20,15 @@
 - Type and category classification
 - Confidence scoring system
 
+### Search and Matching
+- Hybrid approach combining:
+  - Vector-based semantic search using sentence-transformers
+  - Text-based matching using Jaccard similarity
+  - Section ID structural matching
+- Configurable scoring weights
+- Detailed match explanations
+- Improvement suggestions
+
 ### LLM Integration
 - Claude-3-opus model for analysis
 - JSON-structured responses
@@ -58,6 +67,13 @@
 - Multi-format support
 - Progress tracking
 - Resource cleanup
+
+### Search Implementation
+- Modular search components
+- Extensible scoring system
+- Configurable weights
+- Detailed explanations
+- Suggestion generation
 
 ## Best Practices
 - Environment variable management
