@@ -22,21 +22,25 @@ class ProposalMatcher:
     def __init__(self, 
                  embedding_model,
                  vector_weight: float = 0.4,
-                 semantic_weight: float = 0.3,
+                 text_weight: float = 0.3,
                  section_weight: float = 0.3):
         """Initialize the matcher.
         
         Args:
             embedding_model: Model for generating embeddings
             vector_weight: Weight for vector similarity score
-            semantic_weight: Weight for semantic matching score
+            text_weight: Weight for text matching score
             section_weight: Weight for section ID matching score
         """
         self.vector_search = ProposalVectorizer()
-        self.hybrid_search = HybridSearchEngine(embedding_model)
+        self.hybrid_search = HybridSearchEngine(
+            embedding_model,
+            vector_weight=0.6,  # Higher weight for semantic similarity
+            text_weight=0.4     # Lower weight for exact text matches
+        )
         self.weights = {
             'vector': vector_weight,
-            'semantic': semantic_weight,
+            'text': text_weight,
             'section': section_weight
         }
 
@@ -84,7 +88,7 @@ class ProposalMatcher:
                     'section_id': section_id,
                     'text': result.chunk.text,
                     'vector_score': result.similarity_score,
-                    'semantic_score': 0.0,  # Will be updated from hybrid results
+                    'text_score': 0.0,  # Will be updated from hybrid results
                     'section_score': section_score
                 }
 
@@ -93,7 +97,7 @@ class ProposalMatcher:
             section_id = self._extract_section_id(result.text)
             if section_id:
                 if section_id in combined_results:
-                    combined_results[section_id]['semantic_score'] = result.final_score
+                    combined_results[section_id]['text_score'] = result.text_match_score
                 else:
                     section_score = self._calculate_section_similarity(
                         requirement_section, section_id
@@ -102,8 +106,8 @@ class ProposalMatcher:
                     combined_results[section_id] = {
                         'section_id': section_id,
                         'text': result.text,
-                        'vector_score': 0.0,  # No vector score available
-                        'semantic_score': result.final_score,
+                        'vector_score': result.vector_score,
+                        'text_score': result.text_match_score,
                         'section_score': section_score
                     }
 
@@ -111,7 +115,7 @@ class ProposalMatcher:
         for result in combined_results.values():
             result['final_score'] = (
                 result['vector_score'] * self.weights['vector'] +
-                result['semantic_score'] * self.weights['semantic'] +
+                result['text_score'] * self.weights['text'] +
                 result['section_score'] * self.weights['section']
             )
 
@@ -142,7 +146,7 @@ class ProposalMatcher:
         # Add score breakdown
         explanation_parts.append("\nScore breakdown:")
         explanation_parts.append(f"- Vector similarity: {top_match['vector_score']:.2f}")
-        explanation_parts.append(f"- Semantic relevance: {top_match['semantic_score']:.2f}")
+        explanation_parts.append(f"- Text matching: {top_match['text_score']:.2f}")
         explanation_parts.append(f"- Section matching: {top_match['section_score']:.2f}")
         
         explanation = "\n".join(explanation_parts)
@@ -155,9 +159,9 @@ class ProposalMatcher:
                 improvements.append(
                     "Consider using more similar terminology to the requirement"
                 )
-            if top_match['semantic_score'] < 0.6:
+            if top_match['text_score'] < 0.6:
                 improvements.append(
-                    "The response could better address the semantic meaning of the requirement"
+                    "Consider using more similar terminology to match the requirement text"
                 )
             if top_match['section_score'] < 0.6:
                 improvements.append(
@@ -217,7 +221,3 @@ class ProposalMatcher:
             match_explanation=explanation,
             suggested_improvements=improvements
         )
-
-    def close(self):
-        """Clean up resources."""
-        self.hybrid_search.close()

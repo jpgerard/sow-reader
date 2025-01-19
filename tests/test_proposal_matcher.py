@@ -36,7 +36,7 @@ def test_proposal_matcher_initialization(embedding_model):
     """Test ProposalMatcher initialization."""
     matcher = ProposalMatcher(embedding_model)
     assert matcher.weights['vector'] == 0.4
-    assert matcher.weights['semantic'] == 0.3
+    assert matcher.weights['text'] == 0.3
     assert matcher.weights['section'] == 0.3
 
 def test_section_id_extraction(embedding_model):
@@ -81,6 +81,8 @@ def test_match_requirement(MockHybridSearch, MockVectorizer, embedding_model,
     
     mock_hybrid_result = Mock()
     mock_hybrid_result.text = "3.2.1 Security Implementation\nOur system implements RBAC"
+    mock_hybrid_result.vector_score = 0.85
+    mock_hybrid_result.text_match_score = 0.75
     mock_hybrid_result.final_score = 0.9
     
     # Configure mocks
@@ -115,7 +117,7 @@ def test_match_explanation_generation(embedding_model):
         'section_id': '3.2.1',
         'text': 'Sample text',
         'vector_score': 0.9,
-        'semantic_score': 0.85,
+        'text_score': 0.85,
         'section_score': 1.0,
         'final_score': 0.92
     }]
@@ -132,7 +134,7 @@ def test_match_explanation_generation(embedding_model):
     # Test with low scores
     matches[0].update({
         'vector_score': 0.5,
-        'semantic_score': 0.5,
+        'text_score': 0.5,
         'section_score': 0.5,
         'final_score': 0.5
     })
@@ -159,6 +161,5 @@ def test_match_explanation_generation(embedding_model):
 
 def test_cleanup(embedding_model):
     """Test resource cleanup."""
-    matcher = ProposalMatcher(embedding_model)
-    matcher.close()
-    matcher.hybrid_search.close.assert_called_once()
+    # Since we removed the close() method, this test is no longer needed
+    pass
